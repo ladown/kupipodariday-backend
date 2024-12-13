@@ -1,8 +1,16 @@
 {
   "name": "kupipodariday-backend",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "author": "Egor Ermilov <egorka33rus52@gmail.com> (https://ermilovee.ru)",
+  "repository": "https://github.com/ladown/kupipodariday-backend.git",
+  "homepage": "https://github.com/ladown/kupipodariday-backend",
+  "maintainers": [
+    "ladown (https://github.com/ladown)"
+  ],
+  "bugs": {
+    "url": "https://github.com/ladown/kupipodariday-backend/issues",
+    "email": "egorka33rus52@gmail.com"
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -18,7 +26,17 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs}": "eslint --fix",
+    "*.{html,pug,css,sass,scss,js,jsx,ts,tsx,mjs,vue,json,jsonc,graphql}": "prettier --write"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -54,10 +72,14 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^9.1.7",
     "jest": "28.1.2",
+    "lint-staged": "^15.2.11",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
