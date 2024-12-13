@@ -79,6 +79,10 @@ export class OffersService {
     return offer;
   }
 
+  async findAll(): Promise<Offer[]> {
+    return await this.offerRepository.find();
+  }
+
   async updateOne(id: number, updateOfferDto: UpdateOfferDto): Promise<Offer> {
     await this.offerRepository.update(id, updateOfferDto);
     return await this.offerRepository.findOne({ where: { id } });

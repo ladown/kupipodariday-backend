@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
@@ -35,6 +39,10 @@ export class WishesService {
     });
   }
 
+  async findAll(): Promise<Wish[]> {
+    return await this.wishRepository.find();
+  }
+
   async updateOne(
     id: number,
     updateWishDto: UpdateWishDto,
@@ -60,5 +68,78 @@ export class WishesService {
     await this.wishRepository.delete(id);
 
     return wish;
+  }
+
+  async findUserWishes(user: User): Promise<Wish[]> {
+    return await this.wishRepository.find({
+      where: { owner: { id: user.id } },
+    });
+  }
+
+  async copyWish(id: number, user: User): Promise<Wish> {
+    const wish = await this.findOne(id);
+
+    if (!wish) {
+      throw new NotFoundException('Такого подарка не существует');
+    }
+
+    const wishData: CreateWishDto = {
+      name: wish.name,
+      link: wish.link,
+      image: wish.image,
+      price: wish.price,
+      description: wish.description,
+    };
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const insertedWish = await queryRunner.manager.insert(Wish, {
+        ...wishData,
+        owner: user,
+        offers: [],
+      });
+
+      wish.copied += 1;
+      await queryRunner.manager.save(wish);
+
+      await queryRunner.commitTransaction();
+
+      return await this.findOne(insertedWish.identifiers[0].id);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new Error('Что-то пошло не так');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  findLastWishes() {
+    return this.wishRepository.find({
+      relations: {
+        owner: true,
+        offers: true,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      take: 10,
+    });
+  }
+
+  findTopWishes() {
+    return this.wishRepository.find({
+      relations: {
+        owner: true,
+        offers: true,
+      },
+      order: {
+        copied: 'DESC',
+      },
+      take: 10,
+    });
   }
 }

@@ -66,6 +66,15 @@ export class WishlistsService {
     return wishlist;
   }
 
+  findAll(): Promise<Wishlist[]> {
+    return this.wishlistRepository.find({
+      relations: {
+        owner: true,
+        items: true,
+      },
+    });
+  }
+
   async updateOne(
     id: number,
     updateWishlistDto: UpdateWishlistDto,

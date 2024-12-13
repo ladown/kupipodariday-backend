@@ -31,6 +31,11 @@ export class OffersController {
     return this.offersService.findOne(+id);
   }
 
+  @Get()
+  findAll() {
+    return this.offersService.findAll();
+  }
+
   @Patch(':id')
   updateOne(@Param('id') id: string, @Body() updateOfferDto: UpdateOfferDto) {
     return this.offersService.updateOne(+id, updateOfferDto);

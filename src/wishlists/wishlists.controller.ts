@@ -34,6 +34,11 @@ export class WishlistsController {
     return this.wishlistsService.findOne(+id);
   }
 
+  @Get()
+  findAll() {
+    return this.wishlistsService.findAll();
+  }
+
   @Patch(':id')
   updateOne(
     @Param('id') id: string,
