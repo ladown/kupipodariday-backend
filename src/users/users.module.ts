@@ -5,9 +5,10 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User } from './entities/user.entity';
 import { WishesModule } from '../wishes/wishes.module';
+import { PasswordModule } from '../password/password.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), WishesModule],
+  imports: [TypeOrmModule.forFeature([User]), WishesModule, PasswordModule],
   providers: [UsersService],
   controllers: [UsersController],
   exports: [UsersService],
