@@ -1,8 +1,16 @@
 {
   "name": "kupipodariday-backend",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "author": "Egor Ermilov <egorka33rus52@gmail.com> (https://ermilovee.ru)",
+  "repository": "https://github.com/ladown/kupipodariday-backend.git",
+  "homepage": "https://github.com/ladown/kupipodariday-backend",
+  "maintainers": [
+    "ladown (https://github.com/ladown)"
+  ],
+  "bugs": {
+    "url": "https://github.com/ladown/kupipodariday-backend/issues",
+    "email": "egorka33rus52@gmail.com"
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
