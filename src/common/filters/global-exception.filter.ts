@@ -20,7 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
-    console.log(exception);
+
     const responseBody =
       exception instanceof HttpException
         ? {
