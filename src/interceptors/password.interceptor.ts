@@ -4,25 +4,33 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { tap } from 'rxjs';
+import { map } from 'rxjs';
 
 @Injectable()
 export class PasswordInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler<any>) {
-    return next.handle().pipe(
-      tap((data) => {
-        const processItem = (item: Record<string, unknown>) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { password, ...rest } = item;
-          return rest;
-        };
+  intercept(context: ExecutionContext, next: CallHandler) {
+    return next.handle().pipe(map((data) => this.removePasswordField(data)));
+  }
 
-        if (Array.isArray(data)) {
-          return data.map(processItem);
-        }
+  private removePasswordField(data: any): any {
+    if (data == null) {
+      return data;
+    }
 
-        return processItem(data);
-      }),
-    );
+    if (typeof data !== 'object' || data instanceof Date) {
+      return data;
+    }
+
+    if (Array.isArray(data)) {
+      return data.map((item) => this.removePasswordField(item));
+    }
+
+    const newObj = {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key) && key !== 'password') {
+        newObj[key] = this.removePasswordField(data[key]);
+      }
+    }
+    return newObj;
   }
 }
