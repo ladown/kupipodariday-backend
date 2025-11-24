@@ -35,29 +35,8 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get(':username')
-  findOne(@Param('username') username: string) {
-    return this.usersService.findOneByUsername(username);
-  }
-
-  @Patch(':id')
-  updateOne(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateOne(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  removeOne(@Param('id') id: string) {
-    return this.usersService.removeOne(+id);
-  }
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get('/me')
+  @Get('me')
   findMe(@Req() req: { user: User }) {
-    console.log(req);
     return req.user;
   }
 
@@ -80,11 +59,31 @@ export class UsersController {
     return this.wishesService.findUserWishes(req.user);
   }
 
+  @Get(':username')
+  findOne(@Param('username') username: string) {
+    return this.usersService.findOneByUsername(username);
+  }
+
   @Get(':username/wishes')
   async findOneWithWishes(@Param('username') username: string) {
     const user = await this.usersService.findOneByUsername(username);
 
     return this.wishesService.findUserWishes(user);
+  }
+
+  @Patch(':id')
+  updateOne(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.updateOne(+id, updateUserDto);
+  }
+
+  @Delete(':id')
+  removeOne(@Param('id') id: string) {
+    return this.usersService.removeOne(+id);
+  }
+
+  @Get()
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Post('find')
