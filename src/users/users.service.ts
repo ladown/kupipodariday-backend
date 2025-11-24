@@ -86,7 +86,7 @@ export class UsersService {
     }
 
     await this.userRepository.update(id, updateUserDto);
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.findOneByIdWithEmail(id);
   }
 
   async removeOne(id: number): Promise<void> {
