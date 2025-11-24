@@ -57,6 +57,7 @@ export class UsersController {
 
   @Get('/me')
   findMe(@Req() req: { user: User }) {
+    console.log(req);
     return req.user;
   }
 

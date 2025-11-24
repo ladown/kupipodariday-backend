@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { OffersService } from './offers.service';
@@ -15,7 +16,9 @@ import { CreateOfferDto } from './dto/create-offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { User } from '../users/entities/user.entity';
+import { PasswordInterceptor } from '../interceptors/password.interceptor';
 
+@UseInterceptors(PasswordInterceptor)
 @UseGuards(JwtAuthGuard)
 @Controller('offers')
 export class OffersController {
