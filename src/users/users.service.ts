@@ -38,6 +38,16 @@ export class UsersService {
     return await this.userRepository.findOne({ where: { username } });
   }
 
+  async findOneByUsernameWithPassword(
+    username: string,
+  ): Promise<User | undefined> {
+    return await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.username = :username', { username })
+      .addSelect('user.password')
+      .getOne();
+  }
+
   async findAll(): Promise<User[]> {
     return await this.userRepository.find();
   }
