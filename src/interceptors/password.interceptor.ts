@@ -12,20 +12,25 @@ export class PasswordInterceptor implements NestInterceptor {
     return next.handle().pipe(map((data) => this.removePasswordField(data)));
   }
 
-  private removePasswordField(data: any) {
+  private removePasswordField(data: any): any {
+    if (data == null) {
+      return data;
+    }
+
+    if (typeof data !== 'object' || data instanceof Date) {
+      return data;
+    }
+
     if (Array.isArray(data)) {
       return data.map((item) => this.removePasswordField(item));
-    } else if (data && typeof data === 'object') {
-      const newObj = { ...data };
-      for (const key in newObj) {
-        if (key === 'password') {
-          delete newObj[key];
-        } else if (typeof newObj[key] === 'object' && newObj[key] !== null) {
-          newObj[key] = this.removePasswordField(newObj[key]);
-        }
-      }
-      return newObj;
     }
-    return data;
+
+    const newObj = {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key) && key !== 'password') {
+        newObj[key] = this.removePasswordField(data[key]);
+      }
+    }
+    return newObj;
   }
 }
