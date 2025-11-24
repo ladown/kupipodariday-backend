@@ -29,6 +29,16 @@ export class WishesController {
     return this.wishesService.create(createWishDto, req.user);
   }
 
+  @Get('last')
+  findLastWishes() {
+    return this.wishesService.findLastWishes();
+  }
+
+  @Get('top')
+  findTopWishes() {
+    return this.wishesService.findTopWishes();
+  }
+
   @UseInterceptors(PasswordInterceptor)
   @UseGuards(JwtAuthGuard)
   @Get(':id')
@@ -56,25 +66,15 @@ export class WishesController {
 
   @UseInterceptors(PasswordInterceptor)
   @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll() {
-    return this.wishesService.findAll();
-  }
-
-  @Get('/last')
-  findLastWishes() {
-    return this.wishesService.findLastWishes();
-  }
-
-  @Get('/top')
-  findTopWishes() {
-    return this.wishesService.findTopWishes();
+  @Post(':id/copy')
+  copyWish(@Param('id') id: string, @Req() req: { user: User }) {
+    return this.wishesService.copyWish(+id, req.user);
   }
 
   @UseInterceptors(PasswordInterceptor)
   @UseGuards(JwtAuthGuard)
-  @Post(':id/copy')
-  copyWish(@Param('id') id: string, @Req() req: { user: User }) {
-    return this.wishesService.copyWish(+id, req.user);
+  @Get()
+  findAll() {
+    return this.wishesService.findAll();
   }
 }
