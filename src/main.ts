@@ -1,14 +1,11 @@
 import { ValidationPipe } from '@nestjs/common';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 
-import { GlobalExceptionFilter } from './filters/global-exception.filter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-  const httpAdapterHost = app.get(HttpAdapterHost);
 
-  app.useGlobalFilters(new GlobalExceptionFilter(httpAdapterHost));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
