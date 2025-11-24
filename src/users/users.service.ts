@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Not, Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PostgresErrorCode } from 'src/enums';
 
 @Injectable()
 export class UsersService {
@@ -14,20 +15,16 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { email, username } = createUserDto;
-
-    const existingUser = await this.userRepository.findOne({
-      where: [{ email }, { username }],
-    });
-
-    if (existingUser) {
-      throw new BadRequestException(
-        'Пользователь с таким email или username уже зарегистрирован',
-      );
+    try {
+      const newUser = this.userRepository.create(createUserDto);
+      return await this.userRepository.save(newUser);
+    } catch (error) {
+      if (error.code === PostgresErrorCode.UniqueViolation) {
+        throw new BadRequestException(
+          'Пользователь с таким email или username уже зарегистрирован',
+        );
+      }
     }
-
-    const newUser = this.userRepository.create(createUserDto);
-    return await this.userRepository.save(newUser);
   }
 
   async findOne(id: number): Promise<User | undefined> {
@@ -70,23 +67,16 @@ export class UsersService {
   }
 
   async updateOne(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const { email, username } = updateUserDto;
-
-    const existingUser = await this.userRepository.findOne({
-      where: [
-        { email, id: Not(id) },
-        { username, id: Not(id) },
-      ],
-    });
-
-    if (existingUser) {
-      throw new BadRequestException(
-        'Пользователь с таким email или username уже зарегистрирован',
-      );
+    try {
+      await this.userRepository.update(id, updateUserDto);
+      return await this.findOneByIdWithEmail(id);
+    } catch (error) {
+      if (error.code === PostgresErrorCode.UniqueViolation) {
+        throw new BadRequestException(
+          'Пользователь с таким email или username уже зарегистрирован',
+        );
+      }
     }
-
-    await this.userRepository.update(id, updateUserDto);
-    return await this.findOneByIdWithEmail(id);
   }
 
   async removeOne(id: number): Promise<void> {
