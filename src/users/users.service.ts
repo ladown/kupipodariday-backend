@@ -34,6 +34,14 @@ export class UsersService {
     return await this.userRepository.findOne({ where: { id } });
   }
 
+  async findOneByIdWithEmail(id: number): Promise<User> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .addSelect('user.email') // явно добавляем только email
+      .getOne();
+  }
+
   async findOneByUsername(username: string): Promise<User | undefined> {
     return await this.userRepository.findOne({ where: { username } });
   }

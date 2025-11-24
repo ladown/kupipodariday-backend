@@ -37,7 +37,7 @@ export class UsersController {
 
   @Get('me')
   findMe(@Req() req: { user: User }) {
-    return req.user;
+    return this.usersService.findOneByIdWithEmail(req.user.id);
   }
 
   @Patch('me')
